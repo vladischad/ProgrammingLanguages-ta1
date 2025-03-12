@@ -13,19 +13,42 @@
 //   http://www.javatpoint.com/java-map
 // and elsewhere.
 
+/**
+ * The Environment class manages variable storage and retrieval for the interpreter.
+ * It also generates C code declarations for the variables used in the program.
+ */
 public class Environment {
 
 	private String[] map = { "x" };
 
+	/**
+     * Stores a variable and its value in the environment.
+     * Currently, this is a stub implementation that simply returns the given value.
+     * @param var The variable name.
+     * @param val The value to store.
+     * @return The stored value.
+     */
 	public int put(String var, int val) {
 		return val;
 	}
 
-	public int get(int pos, String var) throws EvalException {
+	/**
+     * Retrieves the value of a given variable from the environment.
+     * Currently, this is a stub that always returns 0.
+     * @param pos The position in the source code where the variable is accessed.
+     * @param var The variable name.
+     * @return The value of the variable.
+     * @throws EvalException If the variable is undefined.
+     */
+    public int get(int pos, String var) throws EvalException {
 		return 0;
 	}
 
-	public String toC() {
+	/**
+     * Generates C code for variable declarations based on the stored environment.
+     * @return A string containing C variable declarations.
+     */
+    public String toC() {
 		String s = "";
 		String sep = " ";
 		for (String v : map) {

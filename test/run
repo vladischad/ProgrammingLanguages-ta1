@@ -9,20 +9,20 @@
 # the expected output.
 
 Quote() {
-    sed 's/"/\\\"/g'
+    sed 's/"/\\"/g'
 }
 
 Prgs() {
     local p
     for p ; do
-	echo -n "\"$(Quote <$p)\" "
+        echo -n "\"$(Quote <$p)\" "
     done
 }
 
 Compare() {
     case $2 in
-	i) trans="Interpreter:" ;;
-	c) trans="Compiler:   " ;;
+    i) trans="Interpreter:" ;;
+    c) trans="Compiler:   " ;;
     esac
     diff -q -w $1/exp $1/out.$2 2>/dev/null || echo "$trans ${1##*/} failed" >&2
 }
@@ -36,4 +36,27 @@ for t in test-* ; do
     clang-format -i $Code.c
     gcc -Wall $Code.c -o $Code 2>$t/gccerrs && $Code < $t/inp > $t/out.c
     Compare $t c
+
 done
+
+# Additional test cases
+mkdir -p test-unary-minus
+mkdir -p test-float-support
+mkdir -p test-multi-stmt
+mkdir -p test-comments
+
+# Test unary minus
+echo "x = -5;" > test-unary-minus/prg1
+echo "-5" > test-unary-minus/exp
+
+# Test floating point support
+echo "x = 3.14 + 2.86;" > test-float-support/prg1
+echo "6.00" > test-float-support/exp
+
+# Test multiple statements execution
+echo "x = 2; y = x + 3;" > test-multi-stmt/prg1
+echo "5" > test-multi-stmt/exp
+
+# Test comment handling
+echo "// This is a comment\nx = 4; /* block comment */ y = x * 2;" > test-comments/prg1
+echo "8" > test-comments/exp

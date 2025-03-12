@@ -3,23 +3,46 @@
 // It constructs and has-a Scanner for the program
 // being parsed.
 
+/**
+ * The Parser class implements a recursive descent parser.
+ * It processes tokens from the scanner and builds a parse tree.
+ */
 public class Parser {
 
 	private Scanner scanner;
 
-	private void match(String s) throws SyntaxException {
+	/**
+     * Matches the expected token and advances the scanner.
+     * @param s The expected token string.
+     * @throws SyntaxException If the token does not match the expected value.
+     */
+    private void match(String s) throws SyntaxException {
 		scanner.match(new Token(s));
 	}
 
-	private Token curr() throws SyntaxException {
+	/**
+     * Returns the current token.
+     * @return The current token.
+     * @throws SyntaxException If no valid token is found.
+     */
+    private Token curr() throws SyntaxException {
 		return scanner.curr();
 	}
 
-	private int pos() {
+	/**
+     * Returns the current position in the source code.
+     * @return The position of the scanner.
+     */
+    private int pos() {
 		return scanner.pos();
 	}
 
-	private NodeMulop parseMulop() throws SyntaxException {
+	/**
+     * Parses a multiplication or division operator.
+     * @return A NodeMulop representing the operator, or null if not found.
+     * @throws SyntaxException If parsing fails.
+     */
+    private NodeMulop parseMulop() throws SyntaxException {
 		if (curr().equals(new Token("*"))) {
 			match("*");
 			return new NodeMulop(pos(), "*");
@@ -31,7 +54,12 @@ public class Parser {
 		return null;
 	}
 
-	private NodeAddop parseAddop() throws SyntaxException {
+	/**
+     * Parses an addition or subtraction operator.
+     * @return A NodeAddop representing the operator, or null if not found.
+     * @throws SyntaxException If parsing fails.
+     */
+    private NodeAddop parseAddop() throws SyntaxException {
 		if (curr().equals(new Token("+"))) {
 			match("+");
 			return new NodeAddop(pos(), "+");
@@ -43,7 +71,12 @@ public class Parser {
 		return null;
 	}
 
-	private NodeFact parseFact() throws SyntaxException {
+	/**
+     * Parses a factor (number, identifier, or parenthesized expression).
+     * @return A NodeFact representing the parsed factor.
+     * @throws SyntaxException If parsing fails.
+     */
+    private NodeFact parseFact() throws SyntaxException {
 		if (curr().equals(new Token("("))) {
 			match("(");
 			NodeExpr expr = parseExpr();
@@ -60,7 +93,12 @@ public class Parser {
 		return new NodeFactNum(num.lex());
 	}
 
-	private NodeTerm parseTerm() throws SyntaxException {
+	/**
+     * Parses a term (factor with optional multiplication or division).
+     * @return A NodeTerm representing the parsed term.
+     * @throws SyntaxException If parsing fails.
+     */
+    private NodeTerm parseTerm() throws SyntaxException {
 		NodeFact fact = parseFact();
 		NodeMulop mulop = parseMulop();
 		if (mulop == null)
@@ -70,7 +108,12 @@ public class Parser {
 		return term;
 	}
 
-	private NodeExpr parseExpr() throws SyntaxException {
+	/**
+     * Parses an expression (term with optional addition or subtraction).
+     * @return A NodeExpr representing the parsed expression.
+     * @throws SyntaxException If parsing fails.
+     */
+    private NodeExpr parseExpr() throws SyntaxException {
 		NodeTerm term = parseTerm();
 		NodeAddop addop = parseAddop();
 		if (addop == null)
@@ -80,7 +123,12 @@ public class Parser {
 		return expr;
 	}
 
-	private NodeAssn parseAssn() throws SyntaxException {
+	/**
+     * Parses an assignment statement.
+     * @return A NodeAssn representing the parsed assignment.
+     * @throws SyntaxException If parsing fails.
+     */
+    private NodeAssn parseAssn() throws SyntaxException {
 		Token id = curr();
 		match("id");
 		match("=");
@@ -89,14 +137,25 @@ public class Parser {
 		return assn;
 	}
 
-	private NodeStmt parseStmt() throws SyntaxException {
+	/**
+     * Parses a statement (assignment followed by a semicolon).
+     * @return A NodeStmt representing the parsed statement.
+     * @throws SyntaxException If parsing fails.
+     */
+    private NodeStmt parseStmt() throws SyntaxException {
 		NodeAssn assn = parseAssn();
 		match(";");
 		NodeStmt stmt = new NodeStmt(assn);
 		return stmt;
 	}
 
-	public Node parse(String program) throws SyntaxException {
+	/**
+     * Parses a program into a parse tree.
+     * @param program The source code as a string.
+     * @return The root node of the parse tree.
+     * @throws SyntaxException If parsing fails.
+     */
+    public Node parse(String program) throws SyntaxException {
 		scanner = new Scanner(program);
 		scanner.next();
 		NodeStmt stmt = parseStmt();

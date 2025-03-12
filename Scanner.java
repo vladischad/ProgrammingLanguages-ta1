@@ -24,27 +24,42 @@ public class Scanner {
 			s.add(c+"");
 	}
 
+	/**
+     * Initializes the whitespace set.
+     */
 	private void initWhitespace(Set<String> s) {
 		s.add(" ");
 		s.add("\n");
 		s.add("\t");
 	}
 
-	private void initDigits(Set<String> s) {
+	/**
+     * Initializes the digits set.
+     */
+    private void initDigits(Set<String> s) {
 		fill(s,'0','9');
 	}
 
-	private void initLetters(Set<String> s) {
+	/**
+     * Initializes the letters set.
+     */
+    private void initLetters(Set<String> s) {
 		fill(s,'A','Z');
 		fill(s,'a','z');
 	}
 
-	private void initLegits(Set<String> s) {
+	/**
+     * Initializes the set containing valid characters in identifiers.
+     */
+    private void initLegits(Set<String> s) {
 		s.addAll(letters);
 		s.addAll(digits);
 	}
 
-	private void initOperators(Set<String> s) {
+	/**
+     * Initializes the operators set.
+     */
+    private void initOperators(Set<String> s) {
 		s.add("=");
 		s.add("+");
 		s.add("-");
@@ -102,7 +117,10 @@ public class Scanner {
 
 	// scan various kinds of lexeme
 
-	private void nextNumber() {
+	/**
+     * Processes numeric tokens, including floating-point numbers.
+     */
+    private void nextNumber() {
 		int old=pos;
 		many(digits);
 		token=new Token("num",program.substring(old,pos));
