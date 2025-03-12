@@ -10,26 +10,34 @@
  */
 public class Main {
 
-	/**
+    /**
      * Entry point of the program.
-     * Parses and evaluates each command-line argument as a separate source program.
+     * Parses and evaluates all command-line arguments as a single source program.
      * Accumulates the generated code and passes it to the Code generator.
      *
      * @param args Command-line arguments representing source programs.
      */
     public static void main(String[] args) {
-		Parser parser=new Parser();
-		Environment env=new Environment();
-		String code="";
-		for (String prog: args)
-			try {
-				Node node=parser.parse(prog);
-				node.eval(env);
-				code+=node.code();
-			} catch (Exception e) {
-				System.err.println(e);
-			}
-		new Code(code,env);
-	}
-
+        Parser parser = new Parser();
+        Environment env = new Environment();
+        StringBuilder code = new StringBuilder();
+        
+        // Concatenate all command-line arguments into a single program string
+        StringBuilder program = new StringBuilder();
+        for (String arg : args) {
+            program.append(arg).append(" ");
+        }
+        
+        try {
+            // Parse and evaluate the entire concatenated program
+            Node node = parser.parse(program.toString().trim());
+            node.eval(env);
+            code.append(node.code());
+        } catch (Exception e) {
+            System.err.println(e);
+        }
+        
+        // Generate code output
+        new Code(code.toString(), env);
+    }
 }
