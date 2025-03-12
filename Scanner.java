@@ -116,6 +116,26 @@ public class Scanner {
 	}
 
 	// scan various kinds of lexeme
+	
+	/**
+	 * Skips over single-line and multi-line comments.
+	 */
+	private void skipComments() {
+		while (!done()) {
+			if (pos < program.length() - 1 && program.substring(pos, pos + 2).equals("//")) {
+				while (!done() && program.charAt(pos) != '\n')
+					pos++;
+			} else if (pos < program.length() - 1 && program.substring(pos, pos + 2).equals("/*")) {
+				pos += 2;
+				while (!done() && !(program.substring(pos, pos + 2).equals("*/")))
+					pos++;
+				if (!done())
+					pos += 2;
+			} else {
+				break;
+			}
+		}
+	}
 
 	/**
      * Processes numeric tokens, including floating-point numbers.
